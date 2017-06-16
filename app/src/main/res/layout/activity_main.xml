@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayoutt xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</RelativeLayoutt>
+    <com.kincai.testcustomview_dotalternatelyprogress.DotAlternatelyView
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        app:dot_dark_color="#f5b9d4"
+        app:dot_light_color="#aadfcc"
+        app:dot_radius="5dp"
+        app:dot_spacing="6dp"
+        />
+</RelativeLayout>

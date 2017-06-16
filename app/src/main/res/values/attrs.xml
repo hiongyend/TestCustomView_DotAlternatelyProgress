@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DotAlternatelyView">
+        <attr name="dot_dark_color" format="color"/>
+        <attr name="dot_light_color" format="color"/>
+        <attr name="dot_radius" format="dimension"/>
+        <attr name="dot_spacing" format="dimension"/>
+    </declare-styleable>
+</resources>
