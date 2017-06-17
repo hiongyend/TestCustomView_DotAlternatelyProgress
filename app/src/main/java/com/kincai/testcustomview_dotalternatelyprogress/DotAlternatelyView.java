@@ -62,7 +62,7 @@ public class DotAlternatelyView extends View {
     /**
      * 圆点透明度变化最大(也就是透明度在255-mAlphaChangeTotal到255之间)
      */
-    private int mAlphaChangeTotal = 100;
+    private int mAlphaChangeTotal = 130;
     /**
      * 透明度变化率
      */
