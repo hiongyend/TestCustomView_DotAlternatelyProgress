@@ -13,5 +13,6 @@
         app:dot_light_color="#aadfcc"
         app:dot_radius="5dp"
         app:dot_spacing="6dp"
+        app:dot_move_rate="1.3"
         />
 </RelativeLayout>
