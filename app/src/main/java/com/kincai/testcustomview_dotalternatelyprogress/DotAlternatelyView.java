@@ -17,21 +17,28 @@ import android.view.View;
  * .
  * Time 2017-06-16 21:44
  * .
- * Desc TODO
+ * Desc 两个源点来回移动
  */
 
 public class DotAlternatelyView extends View {
     private final String TAG = this.getClass().getSimpleName();
     private Paint mDarkPaint = new Paint();
-    private Paint mLightPaint = new Paint();
     private int mDarkColor;
     private int mLightColor;
     private int mDotRadius;
     private int mDotSpacing;
-    private float mChange;
+    private float mMoveDistance;
+    private float mMoveRate;
+    /** 以刚开始左边圆点为准 向右移*/
     private final int DOT_STATUS_RIGHT = 0X101;
+    /** 以刚开始左边圆点为准 圆点移动方向-向左移*/
     private final int DOT_STATUS_LEFT = 0X102;
+    /** 以刚开始左边圆点为准，圆点移动方向*/
     private int mDotChangeStatus = DOT_STATUS_RIGHT;
+
+    private int mAlphaChangeTotal = 100;
+    private float mAlphaChangeRate;
+    private float mAlphaChange;
     public DotAlternatelyView(Context context) {
         this(context, null);
     }
@@ -53,17 +60,19 @@ public class DotAlternatelyView extends View {
         mLightColor = Attributes.getColor(R.styleable.DotAlternatelyView_dot_light_color, ContextCompat.getColor(getContext(),R.color.colorAccent));
         mDotRadius = Attributes.getDimensionPixelSize(R.styleable.DotAlternatelyView_dot_radius,DensityUtils.dp2px(getContext(),3));
         mDotSpacing = Attributes.getDimensionPixelSize(R.styleable.DotAlternatelyView_dot_spacing,DensityUtils.dp2px(getContext(),6));
+        mMoveRate = Attributes.getFloat(R.styleable.DotAlternatelyView_dot_move_rate,1.2f);
     }
     /**
      * 初始化
      */
     private void init() {
+        //移动总距离/移动率 = alpha总变化/x
+        //x = 移动率 * alpha总变化 / 移动总距离
+        mAlphaChangeRate = mMoveRate * mAlphaChangeTotal / (mDotRadius * 2 + mDotSpacing);
         mDarkPaint.setColor(mDarkColor);
         mDarkPaint.setAntiAlias(true);
         mDarkPaint.setStyle(Paint.Style.FILL);
-        mLightPaint.setColor(mLightColor);
-        mLightPaint.setAntiAlias(true);
-        mLightPaint.setStyle(Paint.Style.FILL);
+        Log.e(TAG, " aaaa "+mAlphaChangeRate);
     }
 
     @Override
@@ -110,19 +119,30 @@ public class DotAlternatelyView extends View {
         int startPointX = getWidth() / 2 - (2 * mDotRadius * 2 + mDotSpacing) / 2 + mDotRadius;
         int startPointY = getHeight() / 2;
         if(mDotChangeStatus == DOT_STATUS_RIGHT) {
-            mChange += 1.1f;
+            mMoveDistance += mMoveRate;
+            mAlphaChange += mAlphaChangeRate;
         } else {
-            mChange -= 1.1f;
+            mAlphaChange -= mAlphaChangeRate;
+            mMoveDistance -= mMoveRate;
         }
-        if(mChange >= mDotRadius * 2 + mDotSpacing && mDotChangeStatus == DOT_STATUS_RIGHT) {
+        Log.e(TAG,"mAlphaChange "+mAlphaChange);
+        if(mMoveDistance >= mDotRadius * 2 + mDotSpacing && mDotChangeStatus == DOT_STATUS_RIGHT) {
             mDotChangeStatus = DOT_STATUS_LEFT;
-            mChange = mDotRadius * 2 + mDotSpacing;
-        } else if(mChange <= 0 && mDotChangeStatus == DOT_STATUS_LEFT) {
+            mMoveDistance = mDotRadius * 2 + mDotSpacing;
+            mAlphaChange = mAlphaChangeTotal;
+        } else if(mMoveDistance <= 0 && mDotChangeStatus == DOT_STATUS_LEFT) {
             mDotChangeStatus = DOT_STATUS_RIGHT;
-            mChange = 0;
+            mMoveDistance = 0;
+            mAlphaChange = 0;
         }
-        canvas.drawCircle(startPointX + mChange, startPointY, mDotRadius, mDarkPaint);
-        canvas.drawCircle(startPointX + mDotRadius * 2 - mChange + mDotSpacing, startPointY, mDotRadius, mLightPaint);
+
+        mDarkPaint.setColor(mDarkColor);
+        mDarkPaint.setAlpha((int) (255 - mAlphaChange));
+        //画不同颜色的圆点 其实可以用一个画笔就可以搞定 这里是为了方便
+        canvas.drawCircle(startPointX + mMoveDistance, startPointY, mDotRadius, mDarkPaint);
+        mDarkPaint.setColor(mLightColor);
+        mDarkPaint.setAlpha((int) (255 - mAlphaChange));
+        canvas.drawCircle(startPointX + mDotRadius * 2 - mMoveDistance + mDotSpacing, startPointY, mDotRadius, mDarkPaint);
 
         invalidate();
     }
