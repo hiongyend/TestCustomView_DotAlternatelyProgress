@@ -17,7 +17,7 @@ import android.view.View;
  * .
  * Time 2017-06-16 21:44
  * .
- * Desc 两个源点来回移动
+ * Desc 两个圆点来回移动
  */
 
 public class DotAlternatelyView extends View {
